@@ -3,4 +3,3 @@ A bash program that sets the environment of new Debian installs::setup included 
 
 
 USAGE: PROGRAM_NAME Username_1 Username_2 Username_3 etc. or just PROGRAM_NAME with no arguments if you don't want to create users.
-       type PROGRAM_NAME -h or PROGRAM_NAME -help for this information
