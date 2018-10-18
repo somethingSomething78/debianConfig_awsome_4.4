@@ -21,7 +21,7 @@ then
     echo "#################### ↓↓↓↓↓↓↓↓↓↓↓ OR ↓↓↓↓↓↓↓↓↓↓ #############################"
     echo
     echo
-    echo "RUN AS ROOT...Usage not creating users: $SCRIPTNAME"
+    echo "RUN AS ROOT...Usage without creating users: $SCRIPTNAME"
     echo
     sleep 10
 
@@ -37,34 +37,12 @@ CURRENTDIR=/tmp/svaka
 BASHRC=.bashrc
 NANORC=.nanorc
 BASHRCROOT=.bashrcroot
-ROOT=root
-USER_PROGRAMMER=""
 SOURCE=sources.list
 SSHD_CONFIG=sshd_config
-var=0
-NUM_USERS="$#"
 #-----------------------------------------------------------------------↓↓
 export DEBIAN_FRONTEND=noninteractive
 #-----------------------------------------------------------------------↑↑
-for i in "$@"
-do
-    if [ "$i" = root ]
-    then
-        break
-    elif [ "$i" != root ]
-    then
-        var=`expr $var + 1`
-        if [ "$var" -eq $NUM_USERS ]
-        then
-            USER_PROGRAMMER=root
-        fi
-    fi
-done
-if [ $USER_PROGRAMMER != "" ]
-then
-    echo "$USER_PROGRAMMER variable is set and ready!"
-fi
-sleep 3
+
 if grep "Port 22" /etc/ssh/sshd_config
 then
     echo -n "Please select/provide the port-number for ssh in iptables and sshd_config:"
@@ -394,7 +372,7 @@ do
         	echo "Couldn't cp .bashrc for user $user"
         	exit 127
     	fi
-    	/bin/chown $user:$user "$HOME/.bashrc" || exit 127
+    	/bin/chown $user:$user "$HOME/.bashrc" || { echo "chown failed"; exit 127; }
     	/bin/chmod 644 "$HOME/.bashrc" || { echo "chmod failed"; exit 127; }
     	/usr/bin/wget https://raw.github.com/trapd00r/LS_COLORS/master/LS_COLORS -O "$HOME"/.dircolors || { echo "wget failed"; exit 127; }
     	echo 'eval $(dircolors -b $HOME/.dircolors)' >> "$HOME"/.bashrc
