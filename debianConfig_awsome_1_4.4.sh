@@ -12,7 +12,7 @@ if [ "$UID" != 0 ]
     exit 1
 fi
 
-if [ "$1" = "-h" || "$1" = "-help" ]
+if [ "$#" -eq 0 ]
 then
     echo "RUN AS ROOT...Usage if you want to create users:...$SCRIPTNAME USER_1 USER_2 USER_3 etc."
     echo "If you create users they will be set with a semi strong password which you need to change later as root with passwd"
