@@ -388,7 +388,7 @@ do
 		echo "Setting users=Bashrc files!"
     	if /bin/cp -f "$CURRENTDIR"/"$BASHRC" "$HOME/.bashrc"
     	then
-        	echo "Copy for $user \(bashrc\) succeeded!"
+        	echo "Copy for $user (bashrc) succeeded!"
         	sleep 3
     	else
         	echo "Couldn't cp .bashrc for user $user"
@@ -404,5 +404,5 @@ done < "$CURRENTDIR"/USERS.txt
 
 echo "Finished setting up your system!"
 cd ~/ || { echo "cd ~/ failed"; exit 155; }
-rm -rf /tmp/svaka || echo "Failed to remove the install directory!!!!!!!!"
+rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
 
