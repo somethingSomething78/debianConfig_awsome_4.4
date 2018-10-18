@@ -1,0 +1,67 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+
+# Note: PS1 and umask are already set in /etc/profile. You should not
+# need this unless you want different defaults for root.
+# PS1='${debian_chroot:+($debian_chroot)}\h:\w\$ '
+# umask 022
+
+# You may uncomment the following lines if you want `ls' to be colorized:
+export LS_OPTIONS='--color=auto'
+eval "`dircolors`"
+#eval "`DIR_COLORS`"
+alias ls='ls $LS_OPTIONS'
+alias ll='ls $LS_OPTIONS -l'
+alias l='ls $LS_OPTIONS -lA'
+
+# Some more alias to avoid making mistakes:
+#alias rm='rm -i'
+#alias cp='cp -i'
+#alias mv='mv -i'
+
+#PS1='${debian_chroot:+($debian_chroot)}\[\033[01;31m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+PS1='\[\e[0;31m\]\u\[\e[m\] \[\e[1;34m\]\w\[\e[m\] \[\e[0;31m\]\$ \[\e[m\]\[\e[0;32m\]'
+
+
+export HISTFILESIZE=20000
+export HISTSIZE=10000
+#Avoid duplicatesðĸ↓
+export HISTCONTROL=ignoredups:erasedups
+#HISTCONTROL=ignoredups
+# Ignore duplicates, ls without options and builtin commands
+#export HISTIGNORE="&:ls:[bf]g:exit"
+shopt -s histappend
+# After each command, append to the history file and reread it
+export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
+# Combine multiline commands into one in history
+#shopt -s cmdhist
+
+
+chmpt()
+{
+    echo "Successfuly called"
+    if [ "$1" -eq 1 ]
+    then
+        PS1='[\t][\u] \[\033[01;34m\]\w\[\033[00m\] [\[\033[01;32m\]\h\[\033[00m\]]\n~↓↓$↓↓ '
+        #source /home/kristjan/.bashrc
+    elif [ "$1" -eq 2 ]
+    then
+        PS1='[\t][\u] \[\033[01;34m\]\w\[\033[00m\] ~↓↓$↓↓ '
+        #source /home/kristjan/.bashrc
+    elif [ "$1" -eq 3 ]
+    #then
+    #    PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    #    #fuck you!!!!!?
+    #else
+    #    printf "%s\n" "Bad input........-\>...\#Try again↓"
+    #fi
+    then
+        PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+        #fuck you!!!!!?
+    elif [ "$1" -eq 7 ]
+    then
+        PS1="\[\033]0;[\h] \w\007\]\[\033[1m\]\[\033[37m\](\[\033[m\]\[\033[35m\]\u@\[\033[m\]\[\033[32m\]\h\[\033[1m\]\[\033[37m\]\[\033[1m\])\[\033[m\]-\[\033[1m\](\[\033[m\]\t\[\033[37m\]\[\033[1m\])\[\033[m\]-\[\033[1m\](\[\033[m\]\[\033[36m\]\w\[\033[1m\]\[\033[37m\])\[\033[35m\]${git_branch}\[\033[m\]\n$"
+        printf "%s\n" "You are an g↓ooħd PROGRAMMER and will become a(maybe a math genious) and p.s. it's not comming back.............----->"
+    else
+        printf "%s\n" "Bad input........->...#Try again↓"
+    fi
+}
