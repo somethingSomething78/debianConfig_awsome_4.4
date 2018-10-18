@@ -38,7 +38,6 @@ BASHRC=.bashrc
 NANORC=.nanorc
 BASHRCROOT=.bashrcroot
 SOURCE=sources.list
-SSHD_CONFIG=sshd_config
 #-----------------------------------------------------------------------↓↓
 export DEBIAN_FRONTEND=noninteractive
 #-----------------------------------------------------------------------↑↑
@@ -52,7 +51,7 @@ fi
 ############################### make all files writable, executable and readable in the working directory#########
 if /bin/chmod -R 777 "$CURRENTDIR"
 then
-    continue
+    :
 else
     echo "chmod CURRENTDIR failed"
     sleep 3
