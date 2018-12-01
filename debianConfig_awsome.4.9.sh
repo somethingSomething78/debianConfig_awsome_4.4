@@ -1,7 +1,18 @@
 #!/bin/bash -x
 
-# redirect all errors to a file
-exec 2>debianConfigVersion3.1ERRORS.txt
+shopt -s -o nounset
+####### Catch signals that could stop the script
+trap : SIGINT SIGQUIT SIGTERM
+#################################
+
+# redirect all errors to a file                                                                    #### MUNA setja þetta í sshd_config="#HISTAMIN98"
+if [ -w /tmp/svaka ]
+then
+	exec 2>debianConfigVersion4.9__ERRORS__.txt
+else
+	echo "can't write error file!"
+	exit 127
+fi
 ##################################################################################################### exec 3>cpSuccessCodes.txt ## 
 
 SCRIPTNAME=$(basename "$0")
@@ -9,6 +20,7 @@ SCRIPTNAME=$(basename "$0")
 if [ "$UID" != 0 ]
     then
     echo "This program should be run as root, exiting! now....."
+    sleep 3
     exit 1
 fi
 
@@ -42,7 +54,7 @@ SOURCE=sources.list
 export DEBIAN_FRONTEND=noninteractive
 #-----------------------------------------------------------------------↑↑
 
-if grep "Port 22" /etc/ssh/sshd_config
+if [[ $PORT == "" ]] && ! grep "#HISTAMIN98" /etc/ssh/sshd_config && [[ `/sbin/iptables-save | grep '^\-' | wc -l` > 0 ]]
 then
     echo -n "Please select/provide the port-number for ssh in iptables and sshd_config:"
     read port ### when using the "-p" option then the value is stored in $REPLY
@@ -72,8 +84,10 @@ checkIfUser()
         if id -u "$name" #>/dev/null 2>&1
         then
             echo "User: $name exists....setting up now!"
+            sleep 3
         else
             echo "User: $name does not exists....creating now!"
+            sleep 3
             useradd -m -s /bin/bash "$name" #>/dev/null 2>&1
         fi
     done
@@ -87,10 +101,11 @@ prepare_USERS()
 	checkIfUser "$@"
 	awk -F: '$3 >= 1000 { print $1 }' /etc/passwd > "$WORK_DIR"/USERS.txt
 
-	chmod 777 "$WORK_DIR"/USERS.txt
+	chmod 750 "$WORK_DIR"/USERS.txt
 	if [[ ! -f "$WORK_DIR"/USERS.txt && ! -w "$WORK_DIR"/USERS.txt ]]
 	then
 		echo "USERS.txt doesn't exist or is not writable..exiting!"
+		sleep 3
 		exit 127
 	fi
 	for user in "$@"
@@ -105,6 +120,7 @@ userPass()
 	if [[ ! -f "$WORK_DIR"/USERS.txt && ! -w "$WORK_DIR"/USERS.txt ]]
 	then
 		echo "USERS.txt doesn't exist or is not writable..exiting!"
+		sleep 3
 		exit 127
 	fi
     while read i
@@ -117,11 +133,12 @@ userPass()
         then
             echo "$i doesn't have a password."
             echo "Changing password for $i:"
+            sleep 3
             echo $i:$i"YOURSTRONGPASSWORDHERE12345Áá" | /usr/sbin/chpasswd
             if [ "$?" = 0 ]
                 then
                 echo "Password for user $i changed successfully"
-                sleep 5
+                sleep 3
             fi
         fi
 	done < "$WORK_DIR"/USERS.txt
@@ -134,10 +151,11 @@ setUPiptables()
     if [[ `/sbin/iptables-save | grep '^\-' | wc -l` > 0 ]]
 	then
         echo "Iptables already set, skipping..........!"
+        sleep 3
     else
     	if [ "$PORT" = "" ]
     	then
-        	echo "Port not set for iptables exiting"
+        	echo "Port not set for iptables, setting now......."
         	echo -n "Setting port now, insert portnumber: "
         	read port
         	PORT=$port
@@ -203,11 +221,13 @@ setUPsshd()
     if grep "Port $PORT" /etc/ssh/sshd_config
     then
         echo "sshd already set, skipping!"
+        sleep 3
     else
 
         if [ "$PORT" = "" ]
         then
             echo "Port not set"
+            sleep 3
             exit 12
         fi
         users=""
@@ -311,7 +331,8 @@ updateSources
 passwd -l www-data
 #################################### firmware
 apt install -y firmware-linux-nonfree firmware-linux
-sleep 5
+apt install -y firmware-linux-free intel-microcode
+sleep 3
 ################ NANO SYNTAX-HIGHLIGHTING #####################3
 if [ ! -d "$WORK_DIR"/nanorc  ]
 then
@@ -385,7 +406,11 @@ EOF
 done < "$WORK_DIR"/USERS.txt
 
 echo "Finished setting up your system!"
-cd ~/ || { echo "cd ~/ failed"; exit 155; }
-######### REmember to uncomment below echo to remove the install files.......↓↓↓
-echo rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
 
+############ Give control back to these signals
+trap SIGINT SIGQUIT SIGTERM
+############################
+cd ~/ || { echo "cd ~/ failed"; exit 155; }
+######### REmember to uncomment below echo to remove the install files after installation/configuration.......↓↓↓
+echo rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
+exit 0

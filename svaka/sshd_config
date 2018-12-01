@@ -10,6 +10,7 @@ DenyGroups bin daemon sys adm tty disk lp mem kmem wheel mail news uucp man game
 
 DenyUsers bin daemon adm lp sync shutdown halt mail news uucp operator games ftp smmsp mysql rpc sshd nobody test guest user admin apache www wwwrun httpd irc
 
+#HISTAMIN98
 # Use these options to restrict which interfaces/protocols sshd will bind to
 #ListenAddress ::
 #ListenAddress 0.0.0.0
