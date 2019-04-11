@@ -4,7 +4,7 @@
 # What ports, IPs and protocols we listen for
 Port 22300
 
-AllowUsers steve
+
 
 DenyGroups bin daemon sys adm tty disk lp mem kmem wheel mail news uucp man games slocate utmp smmsp mysql rpc sshd shadow ftp nogroup console xcdwrite
 

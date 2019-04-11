@@ -199,7 +199,6 @@ alias ls="ls --color=auto"
 #POWERLINE_BASH_SELECT=1
 
 #. /home/kristjan/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
-eval $(dircolors -b $HOME/.dircolors)
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/Unetbootin:/opt/bin
 export EDITOR=nano
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/Unetbootin:/opt/bin:/usr/games
