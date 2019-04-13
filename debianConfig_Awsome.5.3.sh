@@ -13,9 +13,40 @@
 #display the names and values of shell variables. 
 shopt -s -o nounset
 
+############################################################
+#The set -e option instructs bash to immediately exit if any command [1] has a non-zero exit status. You wouldn't want to set this for your command-line shell, 
+#but in a script it's massively helpful. In all widely used general-purpose programming languages, an unhandled runtime error - whether that's a thrown exception
+#in Java, or #a segmentation fault in C, or a syntax error in Python - immediately halts execution of the program; subsequent lines are not executed.
+
+#set -u affects variables. When set, a reference to any variable you haven't previously defined - with the exceptions of $* and $@ - is an error, and causes the
+#program to immediately exit. Languages like Python, C, Java and more all behave the same way, for all sorts of good reasons. One is so typos don't create new
+#variables without you realizing it.
+
+#set -o pipefail
+#This setting prevents errors in a pipeline from being masked. If any command in a pipeline fails, that return code will be used as the return code of the whole
+#pipeline. By default, the pipeline's return code is that of the last command - even if it succeeds. Imagine finding a sorted list of matching lines in a file:
+
+#    % grep some-string /non/existent/file | sort
+#    grep: /non/existent/file: No such file or directory
+#    % echo $?
+#    0
+#set -euo pipefail
+#set -euo pipefail
+#####33 Also use this↓↓↓↓↓↑↑↑↑↑↑↑↑↑↑
+#set -euo pipefail
+IFS.OLD="$IFS"
+IFS=$'\n\t'
+#↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+#Setting IFS to $'\n\t' means that word splitting will happen only on newlines and tab characters. This very often produces useful splitting behavior. By default, 
+#bash sets this to $' \n\t' - space, newline, tab - which is too eager.
+#######################↑↑↑↑↑↑↑↑
+#
+
 ####### Catch signals that could stop the script
 trap : SIGINT SIGQUIT SIGTERM
 #################################
+####### Catch the program on successful exit and cleanup
+trap successfulExit EXIT
 
 ####################################################### Setup system to send email with your google/gmail account and sendmail ##############################
 ######################################################## TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO ##############################
@@ -443,6 +474,14 @@ setup_portsentry()
     fi
 }
 
+################################### Successful exit then this cleanup ###########################################################3
+
+successfulExit()
+{
+    IFS=$IFS.OLD
+    cd "$HOME" || { echo "cd $HOME failed"; exit 155; }
+    rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
+}
 ###############################################################################################################################33
 #####################################################3 run methods here↓   ###################################################3
 #####################################################                      ###################################################
@@ -553,7 +592,5 @@ sleep 2
 ############ Give control back to these signals
 trap SIGINT SIGQUIT SIGTERM
 ############################
-cd "$HOME" || { echo "cd $HOME failed"; exit 155; }
-######### REmember to uncomment below echo to remove the install files after installation/configuration.......↓↓↓
-echo rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
+
 exit 0
