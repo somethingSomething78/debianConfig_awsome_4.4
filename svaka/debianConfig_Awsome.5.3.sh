@@ -1,6 +1,9 @@
 #!/bin/bash -x
 
-################## shopt (shopt [-pqsu] [-o] [optname …])= This builtin allows you to change additional shell optional behavior. 
+########### Copy or Move the accompanied directory called "svaka" to /tmp ######################
+################################################################################################
+
+################## shopt (shopt [-pqsu] [-o] [optname …]) = This builtin allows you to change additional shell optional behavior. 
 ################## -s = Enable (set) each optname.
 ################## -o = Restricts the values of optname to be those defined for the -o option to the set builtin (see The Set Builtin). 
 ################## nounset = Treat unset variables and parameters other than the special parameters ‘@’ or ‘*’ as an error when performing parameter expansion. An
@@ -85,7 +88,7 @@ trap : SIGINT SIGQUIT SIGTERM
 # it will mail on interrupt or hangup  of the process
 
 ################ Enter the working directory where all work happens ##########################################
-cd "$WORK_DIR" | { echo "cd $WORK_DIR failed"; exit 127; }
+cd "$WORK_DIR" || { echo "cd $WORK_DIR failed"; exit 127; }
 
 # redirect all errors to a file                                                                    #### MUNA setja þetta í sshd_config="#HISTAMIN98"
 if [ -w /tmp/svaka ]
@@ -137,7 +140,7 @@ SOURCE=sources.list
 PORT=""
 
 ########### Commands
-PWD=`pwd`
+PWD=$(pwd)
 
 #-----------------------------------------------------------------------↓↓
 export DEBIAN_FRONTEND=noninteractive
@@ -176,10 +179,10 @@ then
 fi
 
 ########################################### Check if PORT is set and if sshd_config is set and if PORT is set in iptables ####################
-if [[ $PORT == "" ]] && [[ ! `grep "#HISTAMIN98" /etc/ssh/sshd_config` ]] && [[ ! `grep $PORT /etc/iptables.up.rules` ]]
+if [[ $PORT == "" ]] && ! grep -q "#HISTAMIN98" /etc/ssh/sshd_config && ! grep -q $PORT /etc/iptables.up.rules 
 then
     echo -n "Please select/provide the port-number for ssh in iptables setup or sshd_config file:"
-    read port ### when using the "-p" option then the value is stored in $REPLY
+    read -r port ### when using the "-p" option then the value is stored in $REPLY
     PORT=$port
 fi
 
@@ -234,7 +237,7 @@ userPasswords()
 		sleep 3
 		exit 127
 	fi
-    while read user
+    while read -r user
     do
         if [ "$user" = root ]
         then
@@ -245,7 +248,7 @@ userPasswords()
             echo "$user doesn't have a password."
             echo "Changing password for $user:"
             sleep 3
-            echo $user:$user"YOURSTRONGPASSWORDHERE12345Áá" | /usr/sbin/chpasswd
+            echo "$user":"$user""YOURSTRONGPASSWORDHERE12345Áá" | /usr/sbin/chpasswd
             if [ "$?" = 0 ]
                 then
                 echo "Password for user $user changed successfully"
@@ -259,7 +262,7 @@ userPasswords()
 setUPiptables()
 {
 	#if ! grep -e '-A INPUT -p tcp --dport 80 -j ACCEPT' /etc/iptables.test.rules
-    if [[ `/sbin/iptables-save | grep '^\-' | wc -l` > 0 ]]
+    if [[ $(/sbin/iptables-save | grep '^\-' | wc -l) -gt 0 ]]
 	then
         echo "Iptables already set, skipping..........!"
         sleep 2
@@ -268,7 +271,7 @@ setUPiptables()
     	then
         	echo "Port not set for iptables, setting now......."
         	echo -n "Setting port now, insert portnumber: "
-        	read port
+        	read -r port
         	PORT=$port
     	fi
     	if [ ! -f /etc/iptables.test.rules ]
@@ -344,7 +347,7 @@ setUPsshd()
         users=""
         /bin/cp -f "$WORK_DIR"/sshd_config /etc/ssh/sshd_config
         sed -i "s/Port 22300/Port $PORT/" /etc/ssh/sshd_config
-        for user in `awk -F: '$3 >= 1000 { print $1 }' /etc/passwd`
+        for user in $(awk -F: '$3 >= 1000 { print $1 }' /etc/passwd)
         do
             users+="${user} "
         done
@@ -408,7 +411,7 @@ updateSources_installSoftware()
         apt install -y vlc vlc-data browser-plugin-vlc mplayer youtube-dl libdvdcss2 libdvdnav4 libdvdread4 smplayer mencoder build-essential \
         gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0-vaapi lame libfaac0 aacskeys libbdplus0 libbluray1 audacious audacious-plugins \
         deadbeef kodi audacity cinelerra handbrake-gtk ffmpeg amarok k3b || { echo "some software failed to install!!!!!"; echo "some software failed to install"; \
-        sleep 10 }
+        sleep 10; }
         ########################## Install flash in Mozilla Firefox ############################################
         wget https://raw.githubusercontent.com/cybernova/fireflashupdate/master/fireflashupdate.sh || { echo "wget flash failed"; sleep 4; exit 127; }
         chmod +x fireflashupdate.sh || { echo "chmod flash failed"; sleep 4; exit 127; }
@@ -443,7 +446,7 @@ setup_portsentry()
 ###############################################################################################################################33
 #####################################################3 run methods here↓   ###################################################3
 #####################################################                      ###################################################
-if [[ ! "$@" == "" ]]
+if [[ ! "$*" == "" ]]
 then
     creatingNewUsers "$@"
 fi
@@ -516,7 +519,7 @@ then
     wget https://raw.github.com/trapd00r/LS_COLORS/master/LS_COLORS -O "$HOME"/.dircolors || { echo "wget failed"; exit 127; }
     echo 'eval $(dircolors -b $HOME/.dircolors)' >> "$HOME"/.bashrc || { echo "echo 'eval...dircolors -b'....to bashrc failed"; exit 127; }
 fi
-while read user
+while read -r user
 do
   	if [ "$user" = root ]
    	then
@@ -550,7 +553,7 @@ sleep 2
 ############ Give control back to these signals
 trap SIGINT SIGQUIT SIGTERM
 ############################
-cd $HOME || { echo "cd $HOME failed"; exit 155; }
+cd "$HOME" || { echo "cd $HOME failed"; exit 155; }
 ######### REmember to uncomment below echo to remove the install files after installation/configuration.......↓↓↓
 echo rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
 exit 0
