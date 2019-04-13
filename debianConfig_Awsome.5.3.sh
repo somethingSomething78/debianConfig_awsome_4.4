@@ -262,7 +262,7 @@ userPasswords()
 setUPiptables()
 {
 	#if ! grep -e '-A INPUT -p tcp --dport 80 -j ACCEPT' /etc/iptables.test.rules
-    if [[ $(/sbin/iptables-save | grep '^\-' | wc -l) -gt 0 ]]
+    if [[ $(/sbin/iptables-save | grep -c '^\-') -gt 0 ]]
 	then
         echo "Iptables already set, skipping..........!"
         sleep 2
