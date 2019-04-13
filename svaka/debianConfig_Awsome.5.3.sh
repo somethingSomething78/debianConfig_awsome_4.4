@@ -1,12 +1,21 @@
 #!/bin/bash -x
 
+################## shopt (shopt [-pqsu] [-o] [optname …])= This builtin allows you to change additional shell optional behavior. 
+################## -s = Enable (set) each optname.
+################## -o = Restricts the values of optname to be those defined for the -o option to the set builtin (see The Set Builtin). 
+################## nounset = Treat unset variables and parameters other than the special parameters ‘@’ or ‘*’ as an error when performing parameter expansion. An
+# error message will be written to the standard error, and a non-interactive shell will exit.
+################## The Set Builtin
+#This builtin is so complicated that it deserves its own section. set allows you to change the values of shell options and set the positional parameters, or to
+#display the names and values of shell variables. 
 shopt -s -o nounset
+
 ####### Catch signals that could stop the script
 trap : SIGINT SIGQUIT SIGTERM
 #################################
 
-####################################################### Setup system to send email with your google/gmail account and sendmail ###################################
-######################################################## TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO ##################################3
+####################################################### Setup system to send email with your google/gmail account and sendmail ##############################
+######################################################## TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO ##############################
 
 
 # Configuring Gmail as a Sendmail email relay
@@ -14,7 +23,11 @@ trap : SIGINT SIGQUIT SIGTERM
 #
 #Introduction
 #
-#In this configuration tutorial we will guide you through the process of configuring sendmail to be an email relay for your gmail or google apps account. This allows #you to send email from your bash scripts, hosted website or from command line using mail command. Other examples where you can utilize this setting is for a #notification purposes such or failed backups etc. Sendmail is just one of many utilities which can be configured to rely on gmail account where the others include #postfix, exim , ssmpt etc. In this tutorial we will use Debian and sendmail for this task.
+#In this configuration tutorial we will guide you through the process of configuring sendmail to be an email relay for your gmail or google apps account. 
+#This allows #you to send email from your bash scripts, hosted website or from command line using mail command. 
+#Other examples where you can utilize this setting is for a #notification purposes such or failed backups etc.
+#Sendmail is just one of many utilities which can be configured to rely on gmail account where the others include #postfix, exim , ssmpt etc. 
+#In this tutorial we will use Debian and sendmail for this task.
 #Install prerequisites
 #
 ## CODE:apt-get install sendmail mailutils sendmail-bin 
@@ -38,7 +51,7 @@ trap : SIGINT SIGQUIT SIGTERM
 #
 #Configure your sendmail 
 #
-#Put bellow lines into your sendmail.mc configuration file right above first "MAILER" definition line: ###########################################################3↓↓
+#Put bellow lines into your sendmail.mc configuration file right above first "MAILER" definition line: ######################################################
 #
 #define(`SMART_HOST',`[smtp.gmail.com]')dnl
 #define(`RELAY_MAILER_ARGS', `TCP $h 587')dnl
@@ -47,7 +60,7 @@ trap : SIGINT SIGQUIT SIGTERM
 #TRUST_AUTH_MECH(`EXTERNAL DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
 #define(`confAUTH_MECHANISMS', `EXTERNAL GSSAPI DIGEST-MD5 CRAM-MD5 LOGIN PLAIN')dnl
 #FEATURE(`authinfo',`hash -o /etc/mail/authinfo/gmail-auth.db')dnl
-###################################################################################################################################################################↑↑↑
+#############################################################################################################################################################
 #Do not put the above lines on the top of your sendmail.mc configuration file !
 #
 #In the next step we will need to re-build sendmail's configuration. To do that execute:
@@ -66,9 +79,10 @@ trap : SIGINT SIGQUIT SIGTERM
 # CODE: echo "Just testing my sendmail gmail relay" | mail -s "Sendmail gmail Relay" "This email address is being protected from spambots."
 #
 
-#######################################################3 Trap signals and exit to send email on it ################################################################
+#######################################################3 Trap signals and exit to send email on it #######################################################
 #trap 'echo "Subject: Program finsihed execution" | sendmail -v "This email address is being protected from spambots."' exit # It will mail on normal exit
-#trap 'echo "Subject: Program interrupted" | /usr/sbin/sendmail -v "This email address is being protected from spambots."' INT HUP# it will mail on interrupt or hangup  of the process
+#trap 'echo "Subject: Program interrupted" | /usr/sbin/sendmail -v "This email address is being protected from spambots."' INT HUP
+# it will mail on interrupt or hangup  of the process
 
 ################ Enter the working directory where all work happens ##########################################
 cd "$WORK_DIR" | { echo "cd $WORK_DIR failed"; exit 127; }
@@ -81,7 +95,9 @@ else
 	echo "can't write error file!"
 	exit 127
 fi
-##################################################################################################### exec 3>cpSuccessCodes.txt ## 
+##################################################################################################### TODO exec 3>cpSuccessCodes.txt ## 
+#############################################################################################################
+
 
 SCRIPTNAME=$(basename "$0")
 
@@ -140,7 +156,7 @@ then
     exit 127
 fi
 
-############################################################## Check if files exist and are writable ########################################################
+############################################################## Check if files exist and are writable #########################################
 
 if [[ ! -f "$WORK_DIR"/.bashrc && ! -w "$WORK_DIR"/.bashrc ]]
 then
@@ -159,8 +175,8 @@ then
     echo "missing sources.list file or is not writable..exiting now....." && { exit 127; }
 fi
 
-########################################### Check if PORT is set and if sshd_config is set and if PORT is set in iptables ###############################################3
-if [[ $PORT == "" ]] || [[ ! `grep "#HISTAMIN98" /etc/ssh/sshd_config` ]] || [[ ! `grep $PORT /etc/iptables.up.rules` ]]  ##[[ ! `/sbin/iptables-save | grep '^\-' | wc -l` > 0 ]]
+########################################### Check if PORT is set and if sshd_config is set and if PORT is set in iptables ####################
+if [[ $PORT == "" ]] && [[ ! `grep "#HISTAMIN98" /etc/ssh/sshd_config` ]] && [[ ! `grep $PORT /etc/iptables.up.rules` ]]
 then
     echo -n "Please select/provide the port-number for ssh in iptables setup or sshd_config file:"
     read port ### when using the "-p" option then the value is stored in $REPLY
@@ -498,7 +514,7 @@ then
     chown root:root "$HOME/.bashrc" || { echo "chown failed"; exit 127; }
 	chmod 644 "$HOME/.bashrc" || { echo "failed to chmod"; exit 127; }
     wget https://raw.github.com/trapd00r/LS_COLORS/master/LS_COLORS -O "$HOME"/.dircolors || { echo "wget failed"; exit 127; }
-    echo 'eval $(dircolors -b $HOME/.dircolors)' >> "$HOME"/.bashrc || { echo "echo dircolors -b....to bashrc failed"; exit 127; }
+    echo 'eval $(dircolors -b $HOME/.dircolors)' >> "$HOME"/.bashrc || { echo "echo 'eval...dircolors -b'....to bashrc failed"; exit 127; }
 fi
 while read user
 do

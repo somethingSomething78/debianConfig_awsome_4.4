@@ -90,12 +90,12 @@ chmpt()
     elif [ "$1" -eq 7 ]
     then
         PS1="\[\033]0;[\h] \w\007\]\[\033[1m\]\[\033[37m\](\[\033[m\]\[\033[35m\]\u@\[\033[m\]\[\033[32m\]\h\[\033[1m\]\[\033[37m\]\[\033[1m\])\[\033[m\]-\[\033[1m\](\[\033[m\]\t\[\033[37m\]\[\033[1m\])\[\033[m\]-\[\033[1m\](\[\033[m\]\[\033[36m\]\w\[\033[1m\]\[\033[37m\])\[\033[35m\]${git_branch}\[\033[m\]-(`ls | wc -w`)\n$"
-        printf "%s\n" "You are an g↓ooħd PROGRAMMER and will become a(maybe a math genious) and p.s. it's not comming back.............----->"
+        printf "%s\n" "You are an g↓ooħd PROGRAMMER............----->"
         taocl
     elif [ "$1" -eq 4 ]
     then
         PS1="\`if [ \$? = 0 ]; then echo \[\e[33m\]^_^\[\e[0m\]; else echo \[\e[31m\]O_O\[\e[0m\]; fi\`[\u@\h:\w]\\$ "
-        printf "%s\n" "You are going to learn bash, python, C, C\+\+ and lisp in the next few years and become rich"
+        printf "%s\n" "You are going to learn bash, python, C, C\+\+ and lisp in the next few years"
         taocl
     elif [ "$1" -eq 5 ]
     then
