@@ -34,7 +34,7 @@ shopt -s -o nounset
 #set -euo pipefail
 #####33 Also use this↓↓↓↓↓↑↑↑↑↑↑↑↑↑↑
 #set -euo pipefail
-IFS.OLD="$IFS"
+IFS_OLD=$IFS
 IFS=$'\n\t'
 #↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 #Setting IFS to $'\n\t' means that word splitting will happen only on newlines and tab characters. This very often produces useful splitting behavior. By default, 
@@ -45,8 +45,6 @@ IFS=$'\n\t'
 ####### Catch signals that could stop the script
 trap : SIGINT SIGQUIT SIGTERM
 #################################
-####### Catch the program on successful exit and cleanup
-trap successfulExit EXIT
 
 ####################################################### Setup system to send email with your google/gmail account and sendmail ##############################
 ######################################################## TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO ##############################
@@ -118,9 +116,6 @@ trap successfulExit EXIT
 #trap 'echo "Subject: Program interrupted" | /usr/sbin/sendmail -v "This email address is being protected from spambots."' INT HUP
 # it will mail on interrupt or hangup  of the process
 
-################ Enter the working directory where all work happens ##########################################
-cd "$WORK_DIR" || { echo "cd $WORK_DIR failed"; exit 127; }
-
 # redirect all errors to a file                                                                    #### MUNA setja þetta í sshd_config="#HISTAMIN98"
 if [ -w /tmp/svaka ]
 then
@@ -177,6 +172,9 @@ PWD=$(pwd)
 export DEBIAN_FRONTEND=noninteractive
 #-----------------------------------------------------------------------↑↑
 
+################ Enter the working directory where all work happens ##########################################
+cd "$WORK_DIR" || { echo "cd $WORK_DIR failed"; exit 127; }
+
 ############################### make all files writable, executable and readable in the working directory#########
 if ! chown -R root:root "$WORK_DIR"
 then
@@ -217,6 +215,11 @@ then
     PORT=$port
 fi
 
+############################ Check internet connection ##############################
+checkInternet()
+{
+    ping -q -w 1 -c 1 `ip r | grep default | cut -d ' ' -f 3` > /dev/null && return 0 || return 1
+}
 
 ################ Creating new users #####################1
 
@@ -478,13 +481,16 @@ setup_portsentry()
 
 successfulExit()
 {
-    IFS=$IFS.OLD
+    IFS=$IFS_OLD
     cd "$HOME" || { echo "cd $HOME failed"; exit 155; }
     rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
 }
 ###############################################################################################################################33
+####### Catch the program on successful exit and cleanup
+trap successfulExit EXIT
 #####################################################3 run methods here↓   ###################################################3
 #####################################################                      ###################################################
+checkInternet || (echo "no network, bye" && exit 199)
 if [[ ! "$*" == "" ]]
 then
     creatingNewUsers "$@"
@@ -523,13 +529,13 @@ then
             echo "not in WORK_DIR...TRYING 'cd WORK_DIR'"
             cd "$WORK_DIR" || { echo "cd failed"; exit 127; }
         fi
-        git clone https://$OAUTH_TOKEN:x-auth-basic@github.com/gnihtemoSgnihtemos/nanorc || { echo "git failed"; exit 127; }
-        chmod 755 "$WORK_DIR"/nanorc || { echo "chmod nanorc failed"; exit 127; }
-        cd "$WORK_DIR"/nanorc || { echo "cd failed"; exit 127; }
-        make install-global || { echo "make failed"; exit 127; }
-        /bin/cp -f "$WORK_DIR/$NANORC" /etc/nanorc || { echo "cp failed"; exit 127; }
-        chown root:root /etc/nanorc || { echo "chown failed"; exit 127; }
-        chmod 644 /etc/nanorc || { echo "chmod failed"; exit 127; }
+        git clone https://$OAUTH_TOKEN:x-auth-basic@github.com/gnihtemoSgnihtemos/nanorc || { echo "git in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
+        chmod 755 "$WORK_DIR"/nanorc || { echo "chmod in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
+        cd "$WORK_DIR"/nanorc || { echo "cd in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
+        make install-global || { echo "make in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
+        /bin/cp -f "$WORK_DIR/$NANORC" /etc/nanorc || { echo "cp in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
+        chown root:root /etc/nanorc || { echo "chown in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
+        chmod 644 /etc/nanorc || { echo "chmod in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
         if [ "$?" = 0 ]
         then
             echo "Implementing a custom nanorc file succeeded!"
