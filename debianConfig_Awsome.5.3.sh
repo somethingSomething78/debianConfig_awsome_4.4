@@ -41,7 +41,37 @@ IFS=$'\n\t'
 #bash sets this to $' \n\t' - space, newline, tab - which is too eager.
 #######################↑↑↑↑↑↑↑↑
 #
+################################### Successful exit then this cleanup ###########################################################3
 
+#successfulExit()
+#{
+#    IFS=$IFS_OLD
+#    cd "$HOME" || { echo "cd $HOME failed"; exit 155; }
+#    rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
+#}
+################################### Better cleanup code: THANKS GILLES OG UNIX&LINUXstackexchange #####################################################
+
+cleanup ()
+{
+    if [ -n "$1" ]; then
+        echo "Aborted by $1"
+    elif [ $status -ne 0 ]; then
+        echo "Failure (status $status)"
+    else
+        echo "Success"
+        IFS=$IFS_OLD
+        cd "$HOME" || { echo "cd $HOME failed"; exit 155; }
+        rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
+    fi
+}
+trap 'status=$?; cleanup; exit $status' EXIT
+trap 'trap - HUP; cleanup SIGHUP; kill -HUP $$' HUP
+#trap 'trap - INT; cleanup SIGINT; kill -INT $$' INT
+#trap 'trap - TERM; cleanup SIGTERM; kill -TERM $$' TERM
+
+###############################################################################################################################33
+####### Catch the program on successful exit and cleanup
+#trap successfulExit EXIT
 ####### Catch signals that could stop the script
 trap : SIGINT SIGQUIT SIGTERM
 #################################
@@ -477,17 +507,6 @@ setup_portsentry()
     fi
 }
 
-################################### Successful exit then this cleanup ###########################################################3
-
-successfulExit()
-{
-    IFS=$IFS_OLD
-    cd "$HOME" || { echo "cd $HOME failed"; exit 155; }
-    rm -rf /tmp/svaka || { echo "Failed to remove the install directory!!!!!!!!"; exit 155; }
-}
-###############################################################################################################################33
-####### Catch the program on successful exit and cleanup
-trap successfulExit EXIT
 #####################################################3 run methods here↓   ###################################################3
 #####################################################                      ###################################################
 checkInternet || (echo "no network, bye" && exit 199)
