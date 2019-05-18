@@ -90,18 +90,17 @@ chmpt()
     elif [ "$1" -eq 7 ]
     then
         PS1="\[\033]0;[\h] \w\007\]\[\033[1m\]\[\033[37m\](\[\033[m\]\[\033[35m\]\u@\[\033[m\]\[\033[32m\]\h\[\033[1m\]\[\033[37m\]\[\033[1m\])\[\033[m\]-\[\033[1m\](\[\033[m\]\t\[\033[37m\]\[\033[1m\])\[\033[m\]-\[\033[1m\](\[\033[m\]\[\033[36m\]\w\[\033[1m\]\[\033[37m\])\[\033[35m\]${git_branch}\[\033[m\]-(`ls | wc -w`)\n$"
-        printf "%s\n" "You are an g↓ooħd PROGRAMMER............----->"
+        printf "%s\n" "You are an g↓ooħd  and p.s. it's not comming back.............----->"
         taocl
     elif [ "$1" -eq 4 ]
     then
         PS1="\`if [ \$? = 0 ]; then echo \[\e[33m\]^_^\[\e[0m\]; else echo \[\e[31m\]O_O\[\e[0m\]; fi\`[\u@\h:\w]\\$ "
-        printf "%s\n" "You are going to learn bash, python, C, C\+\+ and lisp in the next few years"
+        printf "%s\n" "You are going to learn bash"
         taocl
     elif [ "$1" -eq 5 ]
     then
         #PROMPT_COMMAND='
         PS1="\[\033[0;33m\][\!]\`if [[ \$? = "0" ]]; then echo "\\[\\033[32m\\]"; else echo "\\[\\033[31m\\]"; fi\`[\u.\h: \`if [[ `pwd|wc -c|tr -d " "` > 18 ]]; then echo "\\W"; else echo "\\w"; fi\`]\$\[\033[0m\] "; echo -ne "\033]0;`hostname -s`:`pwd`\007"
-#'
         taocl
     elif [ "$1" -eq 6 ]
     then
@@ -136,6 +135,10 @@ chmpt()
     then
         PS1="\n[$?]\e[1;37m[\e[0;32m\u\e[0;35m@\e[0;32m\h\e[1;37m]\e[1;37m[\e[0;31m\w\e[1;37m]($SHLVL:\!)\n\[\033[0m\]\$ "
         taocl
+    elif [ "$1" -eq 100 ]
+    then
+        sara
+        #clara()
     else
         printf "%s\n" "Bad input........->...#Try again↓"
 	fi
@@ -144,22 +147,45 @@ chmpt()
 
 sara()
 {
-   local colors=`tput colors 2>/dev/null||echo -n 1` C=;
+   local colors=`tput colors 2>/dev/null||echo -n 1` C=""
 
-   if [[ $colors -ge 256 ]]; then
-      C="`tput setaf 33 2>/dev/null`";
-      AA_P='mf=x mt=x n=0; while [[ $n < 1 ]];do read a mt a; read a mf a; (( n++ )); done</proc/meminfo; export AA_PP="\033[38;5;2m"$((mf/1024))/"\033[38;5;89m"$((mt/1024))MB; unset -v mf mt n a';
+   if [[ $colors -ge 256 ]]
+   then
+      C="`tput setaf 33 2>/dev/null`"
+      AA_P='mf=x mt=x n=0; while [[ $n < 1 ]];do read a mt a; read a mf a; (( n++ )); done</proc/meminfo; export AA_PP="\033[38;5;2m"$((mf/1024))/"\033[38;5;89m"$((mt/1024))MB; unset -v mf mt n a'
    else
-      C="`tput setaf 4 2>/dev/null`";
-      AA_P='mf=x mt=x n=0; while [[ $n < 1 ]];do read a mt a; read a mf a; (( n++ )); done</proc/meminfo; export AA_PP="\033[92m"$((mf/1024))/"\033[32m"$((mt/1024))MB; unset -v mf mt n a';
+      C="`tput setaf 4 2>/dev/null`"
+      AA_P='mf=x mt=x n=0; while [[ $n < 1 ]];do read a mt a; read a mf a; (( n++ )); done</proc/meminfo; export AA_PP="\033[92m"$((mf/1024))/"\033[32m"$((mt/1024))MB; unset -v mf mt n a'
    fi;
 
-   eval $AA_P; 
+   eval $AA_P
 
-   PROMPT_COMMAND='stty echo; history -a; echo -en "\e[34h\e[?25h"; (($SECONDS % 2==0 )) && eval $AA_P; echo -en "$AA_PP";';
+   PROMPT_COMMAND='stty echo; history -a; echo -en "\e[34h\e[?25h"; (($SECONDS % 2==0 )) && eval $AA_P; echo -en "$AA_PP";'
    SSH_TTY=${SSH_TTY:-`tty 2>/dev/null||readlink /proc/$$/fd/0 2>/dev/null`}
 
-   PS1="\[\e[m\n\e[1;30m\][\$\$:\$PPID \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \d \[\e[1;30m\][${C}\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY/\/dev\/} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\]\n\\$ ";
+   PS1="\[\e[m\n\e[1;30m\][\$\$:\$PPID \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \d \[\e[1;30m\][${C}\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY/\/dev\/} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\]\n\\$ "
+
+   export PS1 AA_P PROMPT_COMMAND SSH_TTY
+}
+
+
+function clara () 
+{
+   local C="`tput setaf 33`" colors=`tput colors 2>/dev/null`;
+
+   if [[ $colors -eq 256 ]]; then
+      AA_P='mf=x mt=x n=0; while [[ $n < 1 ]];do read a mt a; read a mf a; (( n++ )); done</proc/meminfo; export AA_PP="\033[38;5;2m"$((mf/1024))/"\033[38;5;89m"$((mt/1024))MB';
+   else
+      AA_P='mf=x mt=x n=0; while [[ $n < 1 ]];do read a mt a; read a mf a; (( n++ )); done</proc/meminfo; export AA_PP="\033[92m"$((mf/1024))/"\033[32m"$((mt/1024))MB';
+   fi;
+
+   eval $AA_P;
+
+   PROMPT_COMMAND='stty echo;history -a; echo -en "\e[34h\e[?25h"; (($SECONDS % 2==0 )) && eval $AA_P; echo -en "$AA_PP"';
+
+   SSH_TTY=${SSH_TTY:-`tty 2>/dev/null`}
+
+   PS1="\[\e[m\n\e[1;30m\][\$\$:\$PPID \j:\!\[\e[1;30m\]]\[\e[0;36m\] \T \d \[\e[1;30m\][${C}\u@\H\[\e[1;30m\]:\[\e[0;37m\]${SSH_TTY/\/dev\/} \[\e[0;32m\]+${SHLVL}\[\e[1;30m\]] \[\e[1;37m\]\w\[\e[0;37m\]\n\\$ "
 
    export PS1 AA_P PROMPT_COMMAND SSH_TTY
 }
@@ -169,10 +195,10 @@ sara()
 export HISTFILESIZE=20000
 export HISTSIZE=10000
 #Avoid duplicatesðĸ↓
-export HISTCONTROL=ignoredups:erasedups
+#export HISTCONTROL=ignoredups:erasedups
 #HISTCONTROL=ignoredups
 # Ignore duplicates, ls without options and builtin commands
-export HISTIGNORE="&:ls:[bf]g:exit"
+export HISTIGNORE="&:ls:[bf]g:exit:ignoredups:erasedups"
 shopt -s histappend
 # After each command, append to the history file and reread it
 export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
@@ -199,13 +225,55 @@ alias ls="ls --color=auto"
 #POWERLINE_BASH_SELECT=1
 
 #. /home/kristjan/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
+eval $(dircolors -b $HOME/.dircolors)
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/Unetbootin:/opt/bin
 export EDITOR=nano
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/Unetbootin:/opt/bin:/usr/games
 export PATH=/opt/vuze:$PATH
-if [ -z "$SSH_AUTH_SOCK" ]
+
+
+#shopt -q login_shell && echo 'Login shell' || echo 'Not login shell'
+#bash -c '[[ $- == *i* ]] && echo "Interactive" || echo "Not interactive"'
+#case $- in
+#  *i*) echo "This shell is interactive";;
+#  *) echo "This is a script";;
+#esac
+#if tty -s
+#then
+#    echo Terminal
+#else
+#    echo Not on a terminal
+#fi
+#if [ -z $PS1 ] # no prompt?
+#### if [ -v PS1 ]   # On Bash 4.2+ ...
+#then
+#  # non-interactive
+#  ...
+#else
+#  # interactive
+#  ...
+#fi
+
+[[ $- == *i* ]] && echo "Interactive"
+if [[ $? == 0 ]]
 then
+    if [ -z "$SSH_AUTH_SOCK" ]
+    then
+        choice=""
+        printf "%s:" "Do you wish to set the ssh key now (Y/n):"
+        read choice
+        if [[ "$choice" == "Y" || "$choice" == "y" ]]
+        then
+            eval `ssh-agent`
+            ssh-add
+        fi
+    fi
+fi
+ssh_c()
+{
     eval `ssh-agent`
     ssh-add
-fi
+}
 
+
+alias proj="cd /home/kristjan/Bash_Programming_2018/"
