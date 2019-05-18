@@ -548,7 +548,7 @@ then
             echo "not in WORK_DIR...TRYING 'cd WORK_DIR'"
             cd "$WORK_DIR" || { echo "cd failed"; exit 127; }
         fi
-        git clone https://$OAUTH_TOKEN:x-auth-basic@github.com/gnihtemoSgnihtemos/nanorc || { echo "git in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
+        git clone https://$OAUTH_TOKEN:x-auth-basic@github.com/somethingsomething78/nanorc || { echo "git in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
         chmod 755 "$WORK_DIR"/nanorc || { echo "chmod in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
         cd "$WORK_DIR"/nanorc || { echo "cd in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
         make install-global || { echo "make in Nano SYNTAX-HIGHLIGHTING failed"; exit 127; }
